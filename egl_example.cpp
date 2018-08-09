@@ -9,7 +9,7 @@
 
 #include  <glad/egl.h>
 #include  <glad/gl.h>
-
+#include "lodepng.h"
 struct EGLInternalData2 {
     bool m_isInitialized;
 
@@ -196,6 +196,29 @@ int main(){
     printf("GL_VERSION=%s\n", ver);
     const GLubyte* sl = glGetString(GL_SHADING_LANGUAGE_VERSION);
     printf("GL_SHADING_LANGUAGE_VERSION=%s\n", sl);
+
+    int size = 3 * m_windowWidth * m_windowHeight;
+    unsigned char *data2 = new unsigned char[size];
+
+
+    glClear(GL_COLOR_BUFFER_BIT);
+    glBegin(GL_TRIANGLES);
+    glColor3f(1, 0, 0);
+    glVertex2f(0,  1);
+
+    glColor3f(0, 1, 0);
+    glVertex2f(-1, -1);
+
+    glColor3f(0, 0, 1);
+    glVertex2f(1, -1);
+    glEnd();
+
+
+    eglSwapBuffers( m_data->egl_display, m_data->egl_surface);
+    glReadPixels(0,0,m_windowWidth,m_windowHeight,GL_RGB, GL_UNSIGNED_BYTE, data2);
+    for(int i = 0; i < m_windowWidth * m_windowHeight * 3; i ++) printf("%d\n", (int)(data2[i]));
+    unsigned error = lodepng::encode("test.png", (unsigned char*)data2, m_windowWidth, m_windowHeight, LCT_RGB, 8);
+
 
 }
 
