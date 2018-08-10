@@ -89,6 +89,8 @@ int main(){
         m_data->egl_display = EGL_NO_DISPLAY;
     }
 
+    printf("number of devices found %d\n", num_devices);
+
     // Query EGL Screens
     if(m_data->m_renderDevice == -1) {
         // Chose default screen, by trying all
@@ -216,10 +218,12 @@ int main(){
 
     eglSwapBuffers( m_data->egl_display, m_data->egl_surface);
     glReadPixels(0,0,m_windowWidth,m_windowHeight,GL_RGB, GL_UNSIGNED_BYTE, data2);
-    for(int i = 0; i < m_windowWidth * m_windowHeight * 3; i ++) printf("%d\n", (int)(data2[i]));
     unsigned error = lodepng::encode("test.png", (unsigned char*)data2, m_windowWidth, m_windowHeight, LCT_RGB, 8);
 
-
+    eglTerminate(m_data->egl_display);
+    delete m_data;
+    delete data2;
+    return 0;
 }
 
 
