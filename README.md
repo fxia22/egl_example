@@ -6,6 +6,7 @@ a python EGL + OpenGL context example, from [lucid](https://github.com/tensorflo
 
 ## build and run ##
 ```
+sudo apt install libx11-dev
 mkdir build
 cd build
 cmake ..
