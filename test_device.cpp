@@ -7,9 +7,14 @@
 #include <stdbool.h>
 #include <unistd.h>
 
-#include  <glad/egl.h>
+//#include  <glad/egl.h>
 #include  <glad/gl.h>
 #include "lodepng.h"
+
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
+
+
 struct EGLInternalData2 {
     bool m_isInitialized;
 
@@ -32,6 +37,19 @@ struct EGLInternalData2 {
 
 int main(int argc, char ** argv){
 
+    PFNEGLQUERYDEVICESEXTPROC eglQueryDevicesEXT =
+               (PFNEGLQUERYDEVICESEXTPROC) eglGetProcAddress("eglQueryDevicesEXT");
+    if(!eglQueryDevicesEXT) { 
+         printf("ERROR: extension eglQueryDevicesEXT not available"); 
+         return(-1); 
+    } 
+    
+    PFNEGLGETPLATFORMDISPLAYEXTPROC eglGetPlatformDisplayEXT =
+               (PFNEGLGETPLATFORMDISPLAYEXTPROC)eglGetProcAddress("eglGetPlatformDisplayEXT");
+    if(!eglGetPlatformDisplayEXT) { 
+         printf("ERROR: extension eglGetPlatformDisplayEXT not available"); 
+         return(-1);  
+    }
 
     int m_windowWidth;
     int m_windowHeight;
@@ -70,12 +88,12 @@ int main(int argc, char ** argv){
     EGLInternalData2* m_data = new EGLInternalData2();
 
     // Load EGL functions
-    int egl_version = gladLoaderLoadEGL(NULL);
+    /*int egl_version = gladLoaderLoadEGL(NULL);
     if(!egl_version) {
         fprintf(stderr, "failed to EGL with glad.\n");
         exit(EXIT_FAILURE);
 
-    };
+    };*/
 
     // Query EGL Devices
     const int max_devices = 32;
@@ -109,6 +127,7 @@ int main(int argc, char ** argv){
         exit(EXIT_FAILURE);
     }
 
+    /*
     egl_version = gladLoaderLoadEGL(m_data->egl_display);
     if (!egl_version) {
         fprintf(stderr, "Unable to reload EGL.\n");
@@ -116,7 +135,7 @@ int main(int argc, char ** argv){
     }
     printf("Loaded EGL %d.%d after reload.\n", GLAD_VERSION_MAJOR(egl_version),
            GLAD_VERSION_MINOR(egl_version));
-
+    */
 
     m_data->success = eglBindAPI(EGL_OPENGL_API);
     if (!m_data->success) {
